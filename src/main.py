@@ -14,7 +14,10 @@ driver.maximize_window()
 
 driver.implicitly_wait(6)
 equipError = False
-wait = WebDriverWait(driver, 4)
+wait = WebDriverWait(driver, 10)
+
+partySize = 3
+serviceType = 'Electric'
 
 try:
     # Wait for form to generate
@@ -26,11 +29,8 @@ try:
     driver.find_element_by_css_selector("#mat-select-1").click()
     wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-option[@id='mat-option-7']")))
     equipment = driver.find_element_by_xpath("//mat-option[@id='mat-option-7']").click()
-    
-finally:
 
     # Party Size:
-    partySize = 3
     party = driver.find_element_by_id('mat-input-3')
     party.clear()
     party.send_keys(partySize)
@@ -39,14 +39,33 @@ finally:
     driver.find_element_by_css_selector("button[id='filterButton'] span").click()
     driver.find_element_by_css_selector("button[id='consentButton'] span[class='mat-button-wrapper']").click()
 
+    '''
     element = WebDriverWait(driver, 7).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR,"#mat-select-7"))
+        EC.presence_of_element_located((By.CSS_SELECTOR,"#mat-select-5"))
     )
-
+    '''
     # Service type:
+    # service = driver.find_element_by_css_selector("mat-select[id='mat-select-5'] div[class='mat-select-value']")
+    # service.click()
+    # driver.find_element_by_xpath("//mat-option[@id='mat-option-116']").click()
     service = driver.find_element_by_css_selector("mat-select[id='mat-select-7'] div[class='mat-select-value']")
     service.click()
-    driver.find_element_by_xpath("//mat-option[@id='mat-option-126']").click()
+    services = driver.find_elements_by_css_selector('div mat-option span')
+
+    for serv in services:
+        print(serv.text)
+        if serv.text == serviceType:
+            serv.click()
+            break
+
+    # Equipment Selection:
+    driver.find_element_by_css_selector("#mat-select-1").click()
+    wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-option[@id='mat-option-7']")))
+    equipment = driver.find_element_by_xpath("//mat-option[@id='mat-option-7']").click()
+
+    party = driver.find_element_by_id('mat-input-3')
+    party.clear()
+    party.send_keys(partySize)
 
     # Date Arrival:
     driver.find_element_by_css_selector("mat-form-field[aria-label='Arrival date'] div[class='mat-form-field-infix']").click()
@@ -72,6 +91,7 @@ finally:
         for date in dates:
             if arrivalDay == date.text:
                 date.click()
+                break
         
         pass 
     else:
@@ -80,6 +100,7 @@ finally:
         for date in dates:
             if arrivalDay == date.text:
                 date.click()
+                break
 
 
     nightsInput = driver.find_element_by_id('mat-input-2')
@@ -93,16 +114,6 @@ finally:
 
     driver.find_element_by_css_selector("div[class='mat-checkbox-inner-container']").click()
 
-
-    # Equipment Selection:
-    driver.find_element_by_css_selector("#mat-select-1").click()
-    wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-option[@id='mat-option-7']")))
-    equipment = driver.find_element_by_xpath("//mat-option[@id='mat-option-7']").click()
-
-    party = driver.find_element_by_id('mat-input-3')
-    party.clear()
-    party.send_keys(partySize)
-
     driver.find_element_by_css_selector('#actionSearch').click()
 
     driver.find_element_by_id('list-view-button').click()
@@ -110,6 +121,36 @@ finally:
     for ava in avali:
         if ava.text == 'Available':
             ava.click()
+            break
+    
+    driver.find_element_by_css_selector("button[aria-label='Expand park alerts']").click()
+
+    siteFound = False
+    siteNum = 0
+
+    while siteFound == False:
+        avali = driver.find_elements_by_css_selector('mat-accordion mat-expansion-panel')
+        for ava in avali:
+            print(ava.text)
+            if 'Available' in ava.text and not('Partially' in ava.text):
+                ava.click()
+                siteFound = True
+                break
+        if siteFound:
+            break
+        driver.find_element_by_id('loadMoreButton').click()
+
+    print(siteNum)
+    reserveBtn = driver.find_elements_by_css_selector('div div div div div div div div button span')
+    print('Printing out reserve button: ')
+    for reserve in reserveBtn:
+        print(reserve.text)
+        if reserve.text == 'Reserve':
+            reserve.click()
+
+
+finally:
+
     pass
 
 
