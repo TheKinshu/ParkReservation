@@ -36,17 +36,17 @@ try:
 
     # Location:
     selection.setLocation(None)
-    
+    # Initializing site selection page
     siteSelect = siteSelection(driver)
-
+    # Find available campground
     siteSelect.findCampground()
-
+    # Find available site
     siteSelect.findSite()
 
 
 finally:
-
-    # driver.close()
+    # Close driver 
+    driver.close()
     pass
 
 
