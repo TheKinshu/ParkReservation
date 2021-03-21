@@ -24,6 +24,7 @@ MonthOfArrival: Aug
 DateOfArrival: 30
 NightStayed: 7
 Campsite: Algonquin - Lake Of Two Rivers Campground
+HeadlessChrome: No
 ```
 
 Options you can choose to select (Recommend to copy the following information to avoid type errors):
