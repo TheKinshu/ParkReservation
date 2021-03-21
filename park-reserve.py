@@ -4,12 +4,7 @@ from selenium import webdriver
 from pageDetail.selectionDetails import selections
 import time
 
-# Visible Chrome
-driver = webdriver.Chrome(executable_path='chromedriver.exe')
-driver.get('https://reservations.ontarioparks.com/')
-driver.maximize_window()
 
-driver.implicitly_wait(10)
 
 userInfo = {}
 
@@ -17,6 +12,24 @@ with open('camp.txt') as f:
     for line in f:
         (key, val) = line.split(':')
         userInfo[key] = val
+
+
+chrome_options = webdriver.ChromeOptions()
+headlessMode = str(userInfo['HeadlessChrome']).strip()
+if ('yes' or 'true') in headlessMode.lower():
+    # Start chrome in headless mode
+    chrome_options.add_argument("headless")
+    chrome_options.add_argument("--ignore-certificate-errors")
+    driver = webdriver.Chrome(executable_path='chromedriver.exe',options=chrome_options)
+else:
+    # Visible Chrome
+    driver = webdriver.Chrome(executable_path='chromedriver.exe')
+
+driver.get('https://reservations.ontarioparks.com/')
+driver.maximize_window()
+
+driver.implicitly_wait(10)
+
 
 email = str(userInfo['Username']).strip()
 password = str(userInfo['Password']).strip()
