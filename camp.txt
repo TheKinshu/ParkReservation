@@ -1,0 +1,9 @@
+Username: kc007919@gmail.com
+Password: Kc5cg838
+Equipment: Trailer or RV up to 32ft (9.7m)
+partySize: 3
+serviceType:Electric
+MonthOfArrival: Aug 
+DateOfArrival: 30
+NightStayed: 7
+Campsite: Algonquin - Lake Of Two Rivers Campground

@@ -1,9 +1,12 @@
+from os import truncate
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
 class selections:
     
+    toggle = True
+
     def __init__(self, driver) -> None:
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
@@ -13,35 +16,36 @@ class selections:
             EC.presence_of_element_located((By.CSS_SELECTOR,"div[class='search-container']"))
         )
 
-    def setEquipmentSelection(self):
+    def login(self, email, password):
+        self.driver.find_element_by_css_selector('#login').click()
+        self.driver.find_element_by_xpath("//button[@id='consentButton']//span[@class='mat-button-wrapper'][normalize-space()='I Consent']").click()
+        self.driver.find_element_by_css_selector('#email').send_keys(email)
+        self.driver.find_element_by_css_selector('#password').send_keys(password)
+        self.driver.find_element_by_css_selector("button[type='submit']").click()    
+
+    def setEquipmentSelection(self, equipment):
 
         # Equipment Selection:
         self.driver.find_element_by_css_selector("#mat-select-1").click()
-        self.wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-option[@id='mat-option-7']")))
-        self.driver.find_element_by_xpath("//mat-option[@id='mat-option-7']").click()
 
+        equipments = self.driver.find_elements_by_css_selector('mat-option')
+
+        for equipe in equipments:
+            if equipment == equipe.text:
+                equipe.click()
+                break
 
     def setPartySize(self, size):
         # Party Size:
-        party = self.driver.find_element_by_id('mat-input-3')
-        party.clear()
-        party.send_keys(size)
+        party_size = self.driver.find_element_by_css_selector('#mat-input-5')
+        party_size.clear()
+        party_size.send_keys(size)
 
 
     def setServiceType(self, serviceType):
         # Expand Filter field:
         self.driver.find_element_by_css_selector("button[id='filterButton'] span").click()
-        self.driver.find_element_by_css_selector("button[id='consentButton'] span[class='mat-button-wrapper']").click()
 
-        '''
-        element = WebDriverWait(driver, 7).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR,"#mat-select-5"))
-        )
-        '''
-        # Service type:
-        # service = driver.find_element_by_css_selector("mat-select[id='mat-select-5'] div[class='mat-select-value']")
-        # service.click()
-        # driver.find_element_by_xpath("//mat-option[@id='mat-option-116']").click()
         service = self.driver.find_element_by_css_selector("mat-select[id='mat-select-7'] div[class='mat-select-value']")
         service.click()
         services = self.driver.find_elements_by_css_selector('div mat-option span')
@@ -50,7 +54,6 @@ class selections:
             if serv.text == serviceType:
                 serv.click()
                 break
-
 
     def setDates(self, arrivalMonth, arrivalDay, nights):
         # Date Arrival:
@@ -67,15 +70,10 @@ class selections:
                 if arrivalMonth == month.text:
                     month.click()
                     break
-            
+                
             # Select Date
-            dates = self.driver.find_elements_by_css_selector("[class*='mat-calendar-body-cell mat-focus-indicator ng-star-inserted'] div")
-            for date in dates:
-                if arrivalDay == date.text:
-                    date.click()
-                    break
+            self.driver.find_element_by_xpath("//div[normalize-space()='" + arrivalDay + "']").click()
             
-            pass 
         else:
             # Select Date
             dates = self.driver.find_elements_by_css_selector("[class*='mat-calendar-body-cell mat-focus-indicator ng-star-inserted'] div")
@@ -83,19 +81,24 @@ class selections:
                 if arrivalDay == date.text:
                     date.click()
                     break
-        # Set length of staying
-        nightsInput = self.driver.find_element_by_id('mat-input-2')
+            # Set length of staying
+        nightsInput = self.driver.find_element_by_id('mat-input-4')
         nightsInput.clear()
         nightsInput.send_keys(nights)
 
 
+    def consentClick(self):
+        self.driver.find_element_by_css_selector("div[class='mat-checkbox-inner-container']").click()
 
 
     def setLocation(self, location):
-        self.driver.find_element_by_css_selector("mat-select[id='mat-select-0'] div[class='mat-select-value']").click()
-        self.driver.find_element_by_xpath("//span[@class='mat-option-text'][normalize-space()='Algonquin - Lake Of Two Rivers Campground']").click()
-        self.driver.find_element_by_css_selector("div[class='mat-checkbox-inner-container']").click()
+        self.driver.find_element_by_css_selector('#mat-select-0').click()
+        
+        maps = self.driver.find_elements_by_css_selector('mat-option')
+
+        for map in maps:
+            if location == map.text:
+                map.click()
+                break
+    def submiteInfo(self):
         self.driver.find_element_by_css_selector('#actionSearch').click()
-
-
-

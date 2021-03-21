@@ -48,5 +48,3 @@ finally:
     # Close driver 
     driver.close()
     pass
-
-
